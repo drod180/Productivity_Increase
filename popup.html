@@ -15,9 +15,6 @@
       #status {
         /* avoid an excessively wide status text */
         white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        max-width: 400px;
       }
     </style>
 
@@ -30,8 +27,15 @@
     <script src="popup.js"></script>
   </head>
   <body>
-    <div id="status"></div>
-    <img id="image-result" hidden>
+    <div id="sites">
+      <label class="sites-title"></label>
+      <ul id="sites-list" class="sites-list"></ul>
+    </div>
+    <div id="timers">
+      <label class="timer-label">Break Time</label>
+      <div id="break-timer" class="timer"></div>
+      <label class="timer-label">Work Time</label>
+      <div id="work-timer" class="timer"></div>
+    </div>
   </body>
 </html>
-
