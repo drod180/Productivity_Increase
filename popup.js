@@ -45,17 +45,3 @@ function getCurrentTabUrl(callback) {
  * @param {function(string)} errorCallback - Called when the image is not found.
  *   The callback gets a string that describes the failure reason.
  */
-
-function renderStatus(statusText) {
-  document.getElementById('status').textContent = statusText;
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  getCurrentTabUrl(function(url) {
-    // Put the image URL in Google search.
-    renderStatus('URL: ' + url);
-
-    }, function(errorMessage) {
-      renderStatus('Cannot display image. ' + errorMessage);
-    });
-  });
