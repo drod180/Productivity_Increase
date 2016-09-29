@@ -4,6 +4,7 @@
   "name": "Productivity Improver",
   "description": "This extension limits how often you can go to certain websites",
   "version": "1.0",
+  "options_page": "options.html",
 
   "background": {
     "persistent": false,
