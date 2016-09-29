@@ -6,42 +6,52 @@ var eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
     'onHistoryStateUpdated'];
 
 
-var funTime = 0.0;
+var funTime = 15.0;
 
 eventList.forEach(function(e) {
   chrome.webNavigation[e].addListener(function(info) {
-    if (funTime >= 0) {
-      chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
-        details.forEach(function (detail){
-          if(detail.frameId === 0 && checkUrl(detail.url)) {
-            alert("Back to work!: " + detail.url);
-            checkUrl(detail.url);
-            //chrome.tabs.update(info.tabId, {url: "about:blank"});
-          }
-        });
-      });
+    if (funTime === 0) {
+      checkPage(info);
     }
   });
 });
 
-chrome.alarms.create("TimeCheck", {periodInMinutes:0.1});
+chrome.runtime.onInstalled.addListener(function () {
+    chrome.alarms.create("TimeCheck", {periodInMinutes:0.1});
+});
+
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
     modifyTime();
+    console.log(funTime);
 });
 
-var modifyTime = function () {
-  var add = true;
-  chrome.tabs.query({active: true}, function(tab) {
-    tab.forEach(function(tabEl) {
-      if (checkUrl(tabEl.url)) {
-        add = false;
+
+var checkPage = function (info) {
+  chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
+    details.forEach(function (detail){
+      if(detail.frameId === 0 && checkUrl(detail.url)) {
+        alert("Back to work!: " + detail.url);
+        //chrome.tabs.update(info.tabId, {url: "about:blank"});
       }
     });
   });
+}
 
-  console.log("Add time?");
-  add ? addTime() : subtractTime();
+var modifyTime = function () {
+  var add = true;
+  var tabsProcessed = 0;
+  chrome.tabs.query({active: true}, function(tabs) {
+    tabs.forEach(function(tab) {
+      tabsProcessed++;
+      if (checkUrl(tab.url)) {
+        add = false;
+      }
+      if (tabsProcessed === tabs.length) {
+        add ? addTime() : subtractTime();
+      }
+    });
+  });
 }
 
 var addTime = function() {
@@ -62,7 +72,6 @@ var checkUrl = function(inputUrl) {
   urls.forEach(function(url) {
     var comparer = new RegExp("\\w*." + url + "");
     if (parser.hostname.match(comparer)) {
-      console.log("MATCH");
       match = true;
     }
   });
