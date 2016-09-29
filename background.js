@@ -1,5 +1,4 @@
-var urls = ["https://www.facebook.com/", "http://na.op.gg/"];
-//var urls = ["facebook", "op.gg"];
+var urls = ["facebook.com", "twitch.tv", "op.gg"];
 
 var eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
     'onCommitted', 'onCompleted', 'onDOMContentLoaded',
@@ -11,11 +10,12 @@ var funTime = 0.0;
 
 eventList.forEach(function(e) {
   chrome.webNavigation[e].addListener(function(info) {
-    if (funTime === 0) {
+    if (funTime >= 0) {
       chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
         details.forEach(function (detail){
-          if(detail.frameId === 0) {
-            console.log("Back to work!: " + detail.url);
+          if(detail.frameId === 0 && checkUrl(detail.url)) {
+            alert("Back to work!: " + detail.url);
+            checkUrl(detail.url);
             //chrome.tabs.update(info.tabId, {url: "about:blank"});
           }
         });
@@ -40,6 +40,7 @@ var modifyTime = function () {
     });
   });
 
+  console.log("Add time?");
   add ? addTime() : subtractTime();
 }
 
@@ -54,4 +55,17 @@ var subtractTime = function() {
 }
 
 var checkUrl = function(inputUrl) {
+  var parser = document.createElement('a');
+  parser.href = inputUrl;
+
+  var match = false;
+  urls.forEach(function(url) {
+    var comparer = new RegExp("\\w*." + url + "");
+    if (parser.hostname.match(comparer)) {
+      console.log("MATCH");
+      match = true;
+    }
+  });
+
+  return match;
 }
