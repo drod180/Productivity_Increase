@@ -9,22 +9,24 @@
   <script src="options.js"></script>
 </head>
 <body>
-  <h2>Filtered Sites</h2>
-  <p>List of sites that will be blocked when you have no more break time.</p>
-  <form >
-    <label>Add a site:</label>
+  <h2 class="options-header">Filtered Sites</h2>
+  <p class="options-description">List of sites that will be blocked when you have no more break time.</p>
+  <form class="sites-form">
+    <label class="sites-label">Add a site:
     <input
+      class="sites-textbox"
       type="text"
       placeholder="Enter site"
       value="">
     </input>
-    <input type="submit" class="hidden-submit"/>
+    </label>
+    <input type="submit" class="sites-button"/>
   </form>
-  <ul></ul>
+  <ul class="sites-list"></ul>
 
-  <h2>Work to Break Ratio</h2>
-  <p>Ratio of how many minutes of break time you gain with each minute of work.</p>
-  <select>
+  <h2 class="options-header">Work to Break Ratio</h2>
+  <p class="options-description">Ratio of how many minutes of break time you gain with each minute of work.</p>
+  <select class="options-dropdown" id="break-ratio-dropdown">
     <option value="1:1" selected>1:1</option>
     <option value="2:1">2:1</option>
     <option value="3:1">3:1</option>
@@ -33,9 +35,9 @@
     <option value="1:2">1:2</option>
   </select>
 
-  <h2>Maximum Break Time</h2>
-  <p>Maximum break time you can accrue</p>
-  <select>
+  <h2 class="options-header">Maximum Break Time</h2>
+  <p class="options-description">Maximum break time you can accrue</p>
+  <select class="options-dropdown" id="max-break-dropdown">
     <option value="5 min">5 min</option>
     <option value="15 min">15 min</option>
     <option value="30 min"selected>30 min</option>
@@ -45,6 +47,16 @@
     <option value="Unlimited">Unlimited</option>
   </select>
 
-  <p>Options Saved</p>
-  <a href="#">Save Changes</a>
+  <h2 class="options-header">Minimum Break Time</h2>
+  <p class="options-description">Minimum break time required before you can access filted sites</p>
+  <select class="options-dropdown" id="min-break-dropdown">
+    <option value="0">0 min</option>
+    <option value="5 min">15 min</option>
+    <option value="15 min"selected>30 min</option>
+    <option value="30 min">1 hour</option>
+    <option value="1 hour">2 hour</option>
+  </select>
+
+  <p class="save-text">Options Saved</p>
+  <a class="save-button" href="#">Save Changes</a>
 </body>
