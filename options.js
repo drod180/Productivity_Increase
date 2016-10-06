@@ -13,16 +13,23 @@ function saveOptions() {
   });
 }
 
+//Loads items to saved values
 function loadOptions() {
-  chrome.storage.sync.get("options", function (obj) {
-    $("#break-ratio-dropdown option[value="+ obj.options.ratio + "]").prop("selected", true);
-    $("#max-break-dropdown option[value="+ obj.options.maxBr + "]").prop("selected", true);;
-    $("#min-break-dropdown option[value="+ obj.options.minBr + "]").prop("selected", true);;
+  chrome.storage.sync.get("options", function(obj) {
+    if (obj.options) {
+      obj.options.sites.forEach(function(url) {
+        addSite(url);
+      });
+      $("#break-ratio-dropdown option[value=\""+ obj.options.ratio + "\"]").prop("selected", true);
+      $("#max-break-dropdown option[value="+ obj.options.maxBr + "]").prop("selected", true);;
+      $("#min-break-dropdown option[value="+ obj.options.minBr + "]").prop("selected", true);;
+    }
   });
 }
 
-function addSite() {
-
+function addSite(url) {
+  var sites = $(".sites-list");
+  sites.append("<li class=\"sites-list-item\">" + url + "</li>");
 }
 
 function removeSite() {
@@ -32,7 +39,11 @@ function removeSite() {
 function _getOptions() {
   var options = {};
 
-//  options.sites = $('.sites-list');
+  options.sites = [];
+  var sites = $('.sites-list li');
+  sites.each(function() {
+    options.sites.push(($(this).text()));
+  });
   options.ratio = $('#break-ratio-dropdown').val();
   options.maxBr = $('#max-break-dropdown').val();
   options.minBr = $('#min-break-dropdown').val();
