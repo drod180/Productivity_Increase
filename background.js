@@ -70,7 +70,7 @@ var checkUrl = function(inputUrl) {
 
   var match = false;
   urls.forEach(function(url) {
-    var comparer = new RegExp("\\w*." + url + "");
+    var comparer = new RegExp(url);
     if (parser.hostname.match(comparer)) {
       match = true;
     }

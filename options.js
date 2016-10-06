@@ -27,13 +27,21 @@ function loadOptions() {
   });
 }
 
-function addSite(url) {
+function addSite(inputUrl) {
+  var url = _formatUrl(inputUrl);
   var sites = $(".sites-list");
-  sites.append("<li class=\"sites-list-item\">" + url + "</li>");
+  var $li = $("<li class=\"sites-list-item\">" + url + "</li>");
+  var $a = $("<a class=\"delete-button\">delete</a>");
+  $a.click(function() {
+    $(this).parent().remove()
+  })
+  $li.append($a);
+  sites.append($li);
 }
 
-function removeSite() {
-
+function _formatUrl(url) {
+  var u = new URL(url);
+  return u.hostname;
 }
 
 function _getOptions() {
@@ -51,6 +59,16 @@ function _getOptions() {
   return options;
 }
 
+function addSiteListener() {
+  console.log("added listener");
+  $(".sites-form").submit(function(e) {
+    e.preventDefault();
+    var site = $(".sites-textbox").val();
+    addSite(site);
+  });
+}
+
 $(document).ready(function () {
   loadOptions();
+  addSiteListener();
 });
