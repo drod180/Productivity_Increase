@@ -27,16 +27,20 @@ function loadOptions() {
   });
 }
 
-function addSite(inputUrl) {
-  var url = _formatUrl(inputUrl);
+//Adds a list item to the sites list
+function addSite(url) {
   var sites = $(".sites-list");
   var $li = $("<li class=\"sites-list-item\">" + url + "</li>");
-  var $a = $("<a class=\"delete-button\">delete</a>");
+  addRemoveButton($li);
+  sites.append($li);
+}
+
+function addRemoveButton(parent) {
+  var $a = $("<a class=\"delete-button\">remove</a>");
   $a.click(function() {
     $(this).parent().remove()
   })
-  $li.append($a);
-  sites.append($li);
+  parent.append($a);
 }
 
 function _formatUrl(url) {
@@ -50,7 +54,12 @@ function _getOptions() {
   options.sites = [];
   var sites = $('.sites-list li');
   sites.each(function() {
-    options.sites.push(($(this).text()));
+    var text = $(this).clone()
+                      .children()
+                      .remove()
+                      .end()
+                      .text();
+    options.sites.push(text);
   });
   options.ratio = $('#break-ratio-dropdown').val();
   options.maxBr = $('#max-break-dropdown').val();
@@ -60,15 +69,18 @@ function _getOptions() {
 }
 
 function addSiteListener() {
-  console.log("added listener");
   $(".sites-form").submit(function(e) {
     e.preventDefault();
-    var site = $(".sites-textbox").val();
+    var url = $(".sites-textbox").val();
+    var site = _formatUrl(url);
     addSite(site);
+
   });
 }
+
 
 $(document).ready(function () {
   loadOptions();
   addSiteListener();
+  $(".save-button").click(saveOptions);
 });
