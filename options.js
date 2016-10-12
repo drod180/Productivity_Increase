@@ -12,6 +12,7 @@ function saveOptions() {
     options: options
   }, function() {
     chrome.runtime.sendMessage({options: options});
+    _setSavedStatus();
   });
 }
 
@@ -41,6 +42,7 @@ function addRemoveButton(parent) {
   var $a = $("<a class=\"delete-button\">remove</a>");
   $a.click(function() {
     $(this).parent().remove()
+    _setUnsavedStatus();
   })
   parent.append($a);
 }
@@ -76,13 +78,32 @@ function addSiteListener() {
     var url = $(".sites-textbox").val();
     var site = _formatUrl(url);
     addSite(site);
-
+    _setUnsavedStatus();
   });
+}
+
+function addStatusListener() {
+  $(".options-dropdown").change(_setUnsavedStatus);
+}
+
+function _setUnsavedStatus() {
+  var statusBar = $(".save-text");
+  statusBar.text("Options Changed");
+  statusBar.removeClass("saved");
+  statusBar.addClass("unsaved");
+}
+
+function _setSavedStatus() {
+  var statusBar = $(".save-text");
+  statusBar.text("Options Saved");
+  statusBar.removeClass("unsaved");
+  statusBar.addClass("saved");
 }
 
 
 $(document).ready(function () {
   loadOptions();
   addSiteListener();
+  addStatusListener();
   $(".save-button").click(saveOptions);
 });
