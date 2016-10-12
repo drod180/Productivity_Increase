@@ -1,3 +1,5 @@
+"use strict"
+
 /*Save options in chrome storage
 * Options -
 * Filtered Sites
@@ -9,20 +11,20 @@ function saveOptions() {
   chrome.storage.sync.set({
     options: options
   }, function() {
-    console.log("Data saved!");
+    chrome.runtime.sendMessage({options: options});
   });
 }
 
 //Loads items to saved values
 function loadOptions() {
   chrome.storage.sync.get("options", function(obj) {
-    if (obj.options) {
+    if (typeof obj.options != undefined) {
       obj.options.sites.forEach(function(url) {
         addSite(url);
       });
       $("#break-ratio-dropdown option[value=\""+ obj.options.ratio + "\"]").prop("selected", true);
-      $("#max-break-dropdown option[value="+ obj.options.maxBr + "]").prop("selected", true);;
-      $("#min-break-dropdown option[value="+ obj.options.minBr + "]").prop("selected", true);;
+      $("#max-break-dropdown option[value="+ obj.options.maxBr + "]").prop("selected", true);
+      $("#min-break-dropdown option[value="+ obj.options.minBr + "]").prop("selected", true);
     }
   });
 }

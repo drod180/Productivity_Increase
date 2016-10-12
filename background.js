@@ -1,29 +1,45 @@
-var urls = ["facebook.com", "twitch.tv", "op.gg"];
+"use strict"
 
 var eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
     'onCommitted', 'onCompleted', 'onDOMContentLoaded',
     'onErrorOccurred', 'onReferenceFragmentUpdated', 'onTabReplaced',
     'onHistoryStateUpdated'];
 
+  var urls = [];
+  var funTime = 15.0;
+  var funTimeMax = 30.0;
+  var funTimeMin = 5.0;
+  var funTimeRatio = 1.0;
+  var timeUp = false;
 
-var funTime = 15.0;
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if(typeof request.options != undefined) {
+    setupOptions(request.options);
+  }
+});
 
 eventList.forEach(function(e) {
   chrome.webNavigation[e].addListener(function(info) {
-    if (funTime === 0) {
+    if (timeUp) {
       checkPage(info);
     }
   });
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-    chrome.alarms.create("TimeCheck", {periodInMinutes:0.1});
+    chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
 });
 
+chrome.runtime.onStartup.addListener(function () {
+  chrome.storage.sync.get("options", function(obj) {
+    if (typeof obj.options != undefined) {
+      setupOptions(obj.options);
+    }
+  });
+})
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
     modifyTime();
-    console.log(funTime);
 });
 
 
@@ -31,8 +47,8 @@ var checkPage = function (info) {
   chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
     details.forEach(function (detail){
       if(detail.frameId === 0 && checkUrl(detail.url)) {
-        alert("Back to work!: " + detail.url);
-        //chrome.tabs.update(info.tabId, {url: "about:blank"});
+        //alert("Not time to play yet!: ");
+        chrome.tabs.update(info.tabId, {url: "chrome://newtab"});
       }
     });
   });
@@ -55,13 +71,20 @@ var modifyTime = function () {
 }
 
 var addTime = function() {
-  if (funTime < 30) {
-    funTime += 0.25;
+  if (funTime < funTimeMax) {
+    funTime += funTimeRatio;
+  }
+  if (timeUp && funTime > funTimeMin) {
+    timeUp = false;
   }
 }
 
 var subtractTime = function() {
   funTime > 1 ? funTime -= 1 : funTime = 0;
+  if (funTime === 0) {
+    timeUp = true;
+    alert("Get back to work!");
+  }
 }
 
 var checkUrl = function(inputUrl) {
@@ -77,4 +100,13 @@ var checkUrl = function(inputUrl) {
   });
 
   return match;
+}
+
+var setupOptions = function(options) {
+  urls = options.sites;
+  funTimeRatio = options.ratio;
+  funTimeMax = options.maxBr;
+  funTimeMin = options.minBr;
+
+  if (funTime > funTimeMax) { funTime = funTimeMax }
 }
