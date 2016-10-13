@@ -3,56 +3,67 @@
   <title>Productivity Improver Options</title>
   <script src="jquery-3.1.1.min.js"></script>
   <script src="options.js"></script>
+  <link href="options.css" rel="stylesheet"></link>
 </head>
-<body>
-  <h2 class="options-header">Filtered Sites</h2>
-  <p class="options-description">List of sites that will be blocked when you have no more break time. Please enter as a full URL path, i.e. "https://www.facebook.com/"</p>
-  <form class="sites-form">
-    <label class="sites-label">Add a site:
-    <input
-      class="sites-textbox"
-      type="url"
-      placeholder="Enter URL"
-      />
+<body class="options-body">
+  <h1 class="options-title">Productivity Improver</h1>
+  <div class="options-item">
+    <h2 class="options-header">Filtered Sites</h2>
+    <p class="options-description">List of sites that will be blocked when you have no more break time. Please enter as a full URL path.</p>
+    <label class="site-label">Enter URL:
+    <form class="sites-form">
+      <input
+        class="sites-textbox"
+        type="url"
+        placeholder="i.e. https://www.facebook.com/"
+        />
+      <input type="submit" class="button-hidden"/>
     </label>
-    <input type="submit" class="sites-button"/>
-  </form>
+    </form>
+    <ul class="sites-list"></ul>
+  </div>
 
-  <ul class="sites-list"></ul>
+  <div class="options-item">
+    <h2 class="options-header">Work to Break Ratio</h2>
+    <p class="options-description">Ratio of how many minutes of break time you gain with each minute of work.</p>
+    <select class="options-dropdown" id="break-ratio-dropdown">
+      <option value="1" selected>1:1</option>
+      <option value="0.5">2:1</option>
+      <option value="0.33">3:1</option>
+      <option value="0.25">4:1</option>
+      <option value="0.2">5:1</option>
+      <option value="2">1:2</option>
+    </select>
+  </div>
 
-  <h2 class="options-header">Work to Break Ratio</h2>
-  <p class="options-description">Ratio of how many minutes of break time you gain with each minute of work.</p>
-  <select class="options-dropdown" id="break-ratio-dropdown">
-    <option value="1" selected>1:1</option>
-    <option value="0.5">2:1</option>
-    <option value="0.33">3:1</option>
-    <option value="0.25">4:1</option>
-    <option value="0.2">5:1</option>
-    <option value="2">1:2</option>
-  </select>
+  <div class="options-item">
+    <h2 class="options-header">Maximum Break Time</h2>
+    <p class="options-description">Maximum break time you can accrue.</p>
+    <select class="options-dropdown" id="max-break-dropdown">
+      <option value="5">5 min</option>
+      <option value="15">15 min</option>
+      <option value="30" selected>30 min</option>
+      <option value="60">1 hour</option>
+      <option value="120">2 hour</option>
+      <option value="240">4 hour</option>
+      <option value="0">Unlimited</option>
+    </select>
+  </div>
 
-  <h2 class="options-header">Maximum Break Time</h2>
-  <p class="options-description">Maximum break time you can accrue</p>
-  <select class="options-dropdown" id="max-break-dropdown">
-    <option value="5">5 min</option>
-    <option value="15">15 min</option>
-    <option value="30" selected>30 min</option>
-    <option value="60">1 hour</option>
-    <option value="120">2 hour</option>
-    <option value="240">4 hour</option>
-    <option value="0">Unlimited</option>
-  </select>
+  <div class="options-item">
+    <h2 class="options-header">Minimum Break Time</h2>
+    <p class="options-description">Minimum break time required before you can access filted sites.</p>
+    <select class="options-dropdown" id="min-break-dropdown">
+      <option value="0">0 min</option>
+      <option value="5">15 min</option>
+      <option value="15" selected>30 min</option>
+      <option value="30">1 hour</option>
+      <option value="60">2 hour</option>
+    </select>
+  </div>
 
-  <h2 class="options-header">Minimum Break Time</h2>
-  <p class="options-description">Minimum break time required before you can access filted sites</p>
-  <select class="options-dropdown" id="min-break-dropdown">
-    <option value="0">0 min</option>
-    <option value="5">15 min</option>
-    <option value="15" selected>30 min</option>
-    <option value="30">1 hour</option>
-    <option value="60">2 hour</option>
-  </select>
-
-  <p class="save-text">Options Saved</p>
-  <a class="save-button" href="#">Save Changes</a>
+  <div class="options-save">
+    <p class="save-text">No Changes</p>
+    <a class="save-button" href="#">Save Changes</a>
+  </div>
 </body>

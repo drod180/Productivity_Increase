@@ -95,7 +95,7 @@ function _setUnsavedStatus() {
 
 function _setSavedStatus() {
   var statusBar = $(".save-text");
-  statusBar.text("Options Saved");
+  statusBar.text("Changes Saved");
   statusBar.removeClass("unsaved");
   statusBar.addClass("saved");
 }
