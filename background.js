@@ -8,12 +8,12 @@ var eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
 var urls = [];
 var funTime = 15.0;
 var funTimeMax = 30.0;
-var funTimeMin = 5.0;
+var funTimeMin = 0.0;
 var funTimeRatio = 1.0;
 var timeUp = false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if(typeof request.options != undefined) {
+  if(typeof request.options != "undefined") {
     setupOptions(request.options);
   }
 });
@@ -31,16 +31,15 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 
 chrome.runtime.onStartup.addListener(function () {
-  chrome.storage.sync.get("startup", function(obj) {
-    if (typeof obj.options != undefined) {
+  chrome.storage.sync.get(["options", "time"], function(obj) {
+    if (typeof obj.options != "undefined") {
       setupOptions(obj.options);
     }
-    if (typeof obj.time != undefined) {
+    if (typeof obj.time != "undefined") {
       funTime = parseInt(obj.time);
     }
   });
-
-})
+});
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
     modifyTime();
@@ -62,15 +61,17 @@ var modifyTime = function () {
   var add = true;
   var tabsProcessed = 0;
   chrome.tabs.query({active: true}, function(tabs) {
-    tabs.forEach(function(tab) {
-      tabsProcessed++;
-      if (checkUrl(tab.url)) {
-        add = false;
-      }
-      if (tabsProcessed === tabs.length) {
-        add ? addTime() : subtractTime();
-      }
-    });
+    if (typeof tabs != undefined) {
+      tabs.forEach(function(tab) {
+        tabsProcessed++;
+        if (checkUrl(tab.url)) {
+          add = false;
+        }
+        if (tabsProcessed === tabs.length) {
+          add ? addTime() : subtractTime();
+        }
+      });
+    }
   });
 }
 
@@ -108,6 +109,8 @@ var checkUrl = function(inputUrl) {
 }
 
 var setupOptions = function(options) {
+  console.log("Fun Time: " + funTime);
+  console.log(options);
   urls = options.sites;
   funTimeRatio = parseInt(options.ratio);
   funTimeMax = parseInt(options.maxBr);
