@@ -27,10 +27,22 @@ eventList.forEach(function(e) {
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-    chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
+  chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
 });
 
 chrome.runtime.onStartup.addListener(function () {
+  getAttributes();
+});
+
+//Every time alarm goes off get the attributes, adjust the timer and update
+//memory with the new time.
+chrome.alarms.onAlarm.addListener(function(alarm) {
+  getAttributes();
+  modifyTime();
+  chrome.storage.sync.set({ time: funTime });
+});
+
+var getAttributes = function () {
   chrome.storage.sync.get(["options", "time"], function(obj) {
     if (typeof obj.options != "undefined") {
       setupOptions(obj.options);
@@ -39,13 +51,7 @@ chrome.runtime.onStartup.addListener(function () {
       funTime = parseInt(obj.time);
     }
   });
-});
-
-chrome.alarms.onAlarm.addListener(function(alarm) {
-    modifyTime();
-    chrome.storage.sync.set({ time: funTime });
-});
-
+}
 
 var checkPage = function (info) {
   chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
@@ -109,8 +115,6 @@ var checkUrl = function(inputUrl) {
 }
 
 var setupOptions = function(options) {
-  console.log("Fun Time: " + funTime);
-  console.log(options);
   urls = options.sites;
   funTimeRatio = parseInt(options.ratio);
   funTimeMax = parseInt(options.maxBr);
