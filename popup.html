@@ -2,24 +2,18 @@
 <html>
   <head>
     <title>Getting Started Extension's Popup</title>
-    <style>
-      body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
-      }
-    </style>
+    <link href="popup.css" rel="stylesheet"></link>
+    <script src="jquery-3.1.1.min.js"></script>
     <script src="popup.js"></script>
   </head>
-  <body>
-    <div id="sites">
-      <label class="sites-title">Limited Sites</label>
-      <ul id="sites-list" class="sites-list"></ul>
+  <body class="popup-body">
+    <div class="break-timer">
+      <label class="timer-label">Break Time Remaining
+        <h2 class="timer"></h2>
+      </label>
     </div>
-    <div id="timers">
-      <label class="timer-label">Break Time</label>
-      <div id="break-timer" class="timer"></div>
-      <label class="timer-label">Work Time</label>
-      <div id="work-timer" class="timer"></div>
+    <div class="settings">
+      <a class="settings-button">Settings</a>
     </div>
   </body>
 </html>

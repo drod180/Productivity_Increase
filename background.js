@@ -5,12 +5,12 @@ var eventList = ['onBeforeNavigate', 'onCreatedNavigationTarget',
     'onErrorOccurred', 'onReferenceFragmentUpdated', 'onTabReplaced',
     'onHistoryStateUpdated'];
 
-  var urls = [];
-  var funTime = 15.0;
-  var funTimeMax = 30.0;
-  var funTimeMin = 5.0;
-  var funTimeRatio = 1.0;
-  var timeUp = false;
+var urls = [];
+var funTime = 15.0;
+var funTimeMax = 30.0;
+var funTimeMin = 5.0;
+var funTimeRatio = 1.0;
+var timeUp = false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(typeof request.options != undefined) {
@@ -31,15 +31,20 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 
 chrome.runtime.onStartup.addListener(function () {
-  chrome.storage.sync.get("options", function(obj) {
+  chrome.storage.sync.get("startup", function(obj) {
     if (typeof obj.options != undefined) {
       setupOptions(obj.options);
     }
+    if (typeof obj.time != undefined) {
+      funTime = obj.time;
+    }
   });
+
 })
 
 chrome.alarms.onAlarm.addListener(function(alarm) {
     modifyTime();
+    chrome.storage.sync.set({ time: funTime });
 });
 
 
@@ -71,7 +76,8 @@ var modifyTime = function () {
 }
 
 var addTime = function() {
-  if (funTime < funTimeMax) {
+  //check for zero to account for unlimited funTimeMax value
+  if (funTime < funTimeMax || funTimeMax === 0) {
     funTime += funTimeRatio;
   }
   if (timeUp && funTime > funTimeMin) {
