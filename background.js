@@ -27,7 +27,7 @@ eventList.forEach(function(e) {
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-    chrome.alarms.create("TimeCheck", {periodInMinutes: 0.001});
+    chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
 });
 
 chrome.runtime.onStartup.addListener(function () {
