@@ -27,7 +27,7 @@ eventList.forEach(function(e) {
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-    chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
+    chrome.alarms.create("TimeCheck", {periodInMinutes: 0.001});
 });
 
 chrome.runtime.onStartup.addListener(function () {
@@ -36,7 +36,8 @@ chrome.runtime.onStartup.addListener(function () {
       setupOptions(obj.options);
     }
     if (typeof obj.time != undefined) {
-      funTime = obj.time;
+      funTime = parseInt(obj.time);
+      console.log(funTime);
     }
   });
 
@@ -52,7 +53,6 @@ var checkPage = function (info) {
   chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
     details.forEach(function (detail){
       if(detail.frameId === 0 && checkUrl(detail.url)) {
-        //alert("Not time to play yet!: ");
         chrome.tabs.update(info.tabId, {url: "chrome://newtab"});
       }
     });
@@ -110,9 +110,9 @@ var checkUrl = function(inputUrl) {
 
 var setupOptions = function(options) {
   urls = options.sites;
-  funTimeRatio = options.ratio;
-  funTimeMax = options.maxBr;
-  funTimeMin = options.minBr;
+  funTimeRatio = parseInt(options.ratio);
+  funTimeMax = parseInt(options.maxBr);
+  funTimeMin = parseInt(options.minBr);
 
   if (funTime > funTimeMax) { funTime = funTimeMax }
 }
