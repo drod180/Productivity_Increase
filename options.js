@@ -78,6 +78,7 @@ function addSiteListener() {
     var url = $(".sites-textbox").val();
     var site = _formatUrl(url);
     addSite(site);
+    $(".sites-textbox").val("");
     _setUnsavedStatus();
   });
 }
