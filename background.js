@@ -37,7 +37,6 @@ chrome.runtime.onStartup.addListener(function () {
     }
     if (typeof obj.time != undefined) {
       funTime = parseInt(obj.time);
-      console.log(funTime);
     }
   });
 
