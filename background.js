@@ -32,23 +32,25 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onStartup.addListener(function () {
   getAttributes();
+  chrome.storage.sync.get("time", function(obj) {
+    if (typeof obj.time != "undefined") {
+      funTime = parseFloat(obj.time);
+    }
+  });
 });
 
-//Every time alarm goes off get the attributes, adjust the timer and update
-//memory with the new time.
+//Every time alarm goes off adjust the timer, update memory with the new time.
+// and get the attributes.
 chrome.alarms.onAlarm.addListener(function(alarm) {
-  getAttributes();
   modifyTime();
+  getAttributes();
   chrome.storage.sync.set({ time: funTime });
 });
 
 var getAttributes = function () {
-  chrome.storage.sync.get(["options", "time"], function(obj) {
+  chrome.storage.sync.get("options", function(obj) {
     if (typeof obj.options != "undefined") {
       setupOptions(obj.options);
-    }
-    if (typeof obj.time != "undefined") {
-      funTime = parseInt(obj.time);
     }
   });
 }
@@ -116,9 +118,9 @@ var checkUrl = function(inputUrl) {
 
 var setupOptions = function(options) {
   urls = options.sites;
-  funTimeRatio = parseInt(options.ratio);
-  funTimeMax = parseInt(options.maxBr);
-  funTimeMin = parseInt(options.minBr);
+  funTimeRatio = parseFloat(options.ratio);
+  funTimeMax = parseFloat(options.maxBr);
+  funTimeMin = parseFloat(options.minBr);
 
   if (funTime > funTimeMax) { funTime = funTimeMax }
 }

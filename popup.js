@@ -20,6 +20,7 @@ function adjustColor(timeLeft) {
 document.addEventListener('DOMContentLoaded', function () {
   chrome.runtime.getBackgroundPage(function (bg) {
       var time = bg.funTime;
+      time = Math.floor(time);
       updateTime(time);
       adjustColor(time);
   });
