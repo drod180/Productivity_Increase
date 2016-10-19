@@ -27,7 +27,7 @@ eventList.forEach(function(e) {
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.alarms.create("TimeCheck", {periodInMinutes: 0.01});
+  chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
 });
 
 chrome.runtime.onStartup.addListener(function () {
@@ -44,6 +44,7 @@ chrome.runtime.onStartup.addListener(function () {
 chrome.alarms.onAlarm.addListener(function(alarm) {
   modifyTime();
   getAttributes();
+  console.log("Fun Time: " + funTime);
   chrome.storage.sync.set({ time: funTime });
 });
 
@@ -69,9 +70,7 @@ var modifyTime = function () {
   var add = true;
   var windowsProcessed = 0;
   chrome.windows.getAll({populate:true}, function(windows) {
-
     windows.forEach(function(window){
-
       windowsProcessed++;
       window.tabs.forEach(function(tab){
         if (tab.active && checkUrl(tab.url)) {
@@ -79,11 +78,10 @@ var modifyTime = function () {
         }
       });
       if (windowsProcessed === windows.length) {
+        console.log("Add or Sub?: " + add);
         add ? addTime() : subtractTime();
       }
-
     });
-
   });
 }
 //

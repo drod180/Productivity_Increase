@@ -19,7 +19,7 @@ function saveOptions() {
 //Loads items to saved values
 function loadOptions() {
   chrome.storage.sync.get("options", function(obj) {
-    if (typeof obj.options != undefined) {
+    if (typeof obj.options != "undefined") {
       obj.options.sites.forEach(function(url) {
         addSite(url);
       });
