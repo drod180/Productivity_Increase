@@ -80,11 +80,13 @@ a {
 }
 
 .options-item {
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 10px;
   background: var(--secondarycolor);
   border: 2px solid var(--tertiarycolor);
   border-radius: 5px;
+  max-width: 60%;
+  min-width: 164px;
 }
 
 .options-header {
@@ -113,8 +115,8 @@ a {
 .sites-textbox {
   box-sizing: border-box;
   height: 32px;
-  width: 100%;
-  font-size: 24px;
+  width: calc(100% - 105px);
+  font-size: 20px;
   background: var(--tertiarycolor);
   border: 2px solid var(--primarycolor);
   color: var(--tertiarytext);
@@ -122,8 +124,27 @@ a {
   padding: 0px 5px;
 }
 
-.button-hidden {
-  display: none;
+.submit-button {
+  box-sizing: border-box;
+  height: 32px;
+  font-family: serif;
+  font-size: 20px;
+  background: var(--tertiarycolor);
+  color: var(--tertiarytext);
+  border: 2px solid var(--primarycolor);
+  border-radius: 5px;
+  min-width: 100px;
+  text-align: center;
+}
+
+.submit-button:hover {
+  background: var(--primarycolor);
+  color: var(--secondarytext);
+}
+
+.submit-button:active {
+  background: #B13018;
+  color: var(--tertiarytext);
 }
 
 /* site list */
@@ -211,7 +232,7 @@ a {
   color: var(--tertiarytext);
   padding: 10px 5px;
   border-radius: 10px;
-  width: 200px;
+  max-width: 200px;
   margin: auto;
   margin-top: 10px;
   text-align: center;
