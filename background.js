@@ -27,7 +27,7 @@ eventList.forEach(function(e) {
 });
 
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
+  chrome.alarms.create("TimeCheck", {periodInMinutes: 0.01});
 });
 
 chrome.runtime.onStartup.addListener(function () {
@@ -67,21 +67,43 @@ var checkPage = function (info) {
 
 var modifyTime = function () {
   var add = true;
-  var tabsProcessed = 0;
-  chrome.tabs.query({active: true}, function(tabs) {
-    if (typeof tabs != undefined) {
-      tabs.forEach(function(tab) {
-        tabsProcessed++;
-        if (checkUrl(tab.url)) {
+  var windowsProcessed = 0;
+  chrome.windows.getAll({populate:true}, function(windows) {
+
+    windows.forEach(function(window){
+
+      windowsProcessed++;
+      window.tabs.forEach(function(tab){
+        if (tab.active && checkUrl(tab.url)) {
           add = false;
         }
-        if (tabsProcessed === tabs.length) {
-          add ? addTime() : subtractTime();
-        }
       });
-    }
+      if (windowsProcessed === windows.length) {
+        add ? addTime() : subtractTime();
+      }
+
+    });
+
   });
 }
+//
+// var modifyTime = function () {
+//   var add = true;
+//   var tabsProcessed = 0;
+//   chrome.tabs.query({active: true}, function(tabs) {
+//     if (typeof tabs != undefined) {
+//       tabs.forEach(function(tab) {
+//         tabsProcessed++;
+//         if (checkUrl(tab.url)) {
+//           add = false;
+//         }
+//         if (tabsProcessed === tabs.length) {
+//           add ? addTime() : subtractTime();
+//         }
+//       });
+//     }
+//   });
+// }
 
 var addTime = function() {
   //check for zero to account for unlimited funTimeMax value
@@ -122,5 +144,6 @@ var setupOptions = function(options) {
   funTimeMax = parseFloat(options.maxBr);
   funTimeMin = parseFloat(options.minBr);
 
-  if (funTime > funTimeMax) { funTime = funTimeMax }
+  if (funTimeMax != 0 && funTime > funTimeMax) { funTime = funTimeMax; }
+  if (funTime < funTimeMin) { timeUp = true; }
 }
