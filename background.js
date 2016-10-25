@@ -48,7 +48,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
   chrome.storage.sync.set({ time: funTime });
 });
 
-var getAttributes = function () {
+function getAttributes() {
   chrome.storage.sync.get("options", function(obj) {
     if (typeof obj.options != "undefined") {
       setupOptions(obj.options);
@@ -56,7 +56,7 @@ var getAttributes = function () {
   });
 }
 
-var checkPage = function (info) {
+function checkPage(info) {
   chrome.webNavigation.getAllFrames({tabId: info.tabId}, function(details) {
     details.forEach(function (detail){
       if(detail.frameId === 0 && checkUrl(detail.url)) {
@@ -66,7 +66,7 @@ var checkPage = function (info) {
   });
 }
 
-var modifyTime = function () {
+function modifyTime() {
   var add = true;
   var windowsProcessed = 0;
   chrome.windows.getAll({populate:true}, function(windows) {
@@ -85,7 +85,7 @@ var modifyTime = function () {
   });
 }
 //
-// var modifyTime = function () {
+// function modifyTime() {
 //   var add = true;
 //   var tabsProcessed = 0;
 //   chrome.tabs.query({active: true}, function(tabs) {
@@ -103,7 +103,7 @@ var modifyTime = function () {
 //   });
 // }
 
-var addTime = function() {
+function addTime() {
   //check for zero to account for unlimited funTimeMax value
   if (funTime < funTimeMax || funTimeMax === 0) {
     funTime += funTimeRatio;
@@ -113,7 +113,7 @@ var addTime = function() {
   }
 }
 
-var subtractTime = function() {
+function subtractTime() {
   funTime > 1 ? funTime -= 1 : funTime = 0;
   if (funTime === 0) {
     timeUp = true;
@@ -121,7 +121,7 @@ var subtractTime = function() {
   }
 }
 
-var checkUrl = function(inputUrl) {
+function checkUrl(inputUrl) {
   var parser = document.createElement('a');
   parser.href = inputUrl;
 
@@ -136,7 +136,7 @@ var checkUrl = function(inputUrl) {
   return match;
 }
 
-var setupOptions = function(options) {
+function setupOptions(options) {
   urls = options.sites;
   funTimeRatio = parseFloat(options.ratio);
   funTimeMax = parseFloat(options.maxBr);
