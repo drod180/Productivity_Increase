@@ -11,12 +11,7 @@ var funTimeMax = 30.0;
 var funTimeMin = 0.0;
 var funTimeRatio = 1.0;
 var timeUp = false;
-
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if(typeof request.options != "undefined") {
-    setupOptions(request.options);
-  }
-});
+initializeValues();
 
 eventList.forEach(function(e) {
   chrome.webNavigation[e].addListener(function(info) {
@@ -26,27 +21,52 @@ eventList.forEach(function(e) {
   });
 });
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if(typeof request.options != "undefined") {
+    setupOptions(request.options);
+  }
+});
+
 chrome.runtime.onInstalled.addListener(function () {
   chrome.alarms.create("TimeCheck", {periodInMinutes: 1});
 });
 
-chrome.runtime.onStartup.addListener(function () {
-  getAttributes();
-  chrome.storage.sync.get("time", function(obj) {
-    if (typeof obj.time != "undefined") {
-      funTime = parseFloat(obj.time);
-    }
-  });
+//onStartup doesn't always trigger if background chrome processes are listening
+//this will work around for anytime a new window is opened
+chrome.windows.onCreated.addListener(function() {
+    chrome.windows.getAll(function(windows) {
+        if (windows.length == 1) {
+          initializeValues();
+        }
+    });
 });
+
 
 //Every time alarm goes off adjust the timer, update memory with the new time.
 // and get the attributes.
 chrome.alarms.onAlarm.addListener(function(alarm) {
   modifyTime();
-  getAttributes();
-  console.log("Fun Time: " + funTime);
-  chrome.storage.sync.set({ time: funTime });
 });
+
+function initializeValues() {
+  getAttributes();
+  initalizeTime();
+}
+
+function initalizeTime() {
+  chrome.storage.sync.get("time", function(obj) {
+    if (typeof obj.time != "undefined") {
+      var currentTime = Date.now();
+      var timePassed = (currentTime - obj.time.saveTime) / 60000;
+      //refund time if they were off internet for more than 5 minutes
+      if (timePassed > 5) {
+        funTime += timePassed;
+        if (funTimeMax != 0 && funTime > 15) { funTime = 15; }
+      }
+      funTime = parseFloat(obj.time.funTime);
+    }
+  });
+}
 
 function getAttributes() {
   chrome.storage.sync.get("options", function(obj) {
@@ -78,30 +98,14 @@ function modifyTime() {
         }
       });
       if (windowsProcessed === windows.length) {
-        console.log("Add or Sub?: " + add);
         add ? addTime() : subtractTime();
+        var saveTime = Date.now();
+        var timeObj = {funTime: funTime, saveTime: saveTime};
+        chrome.storage.sync.set({ time: timeObj });
       }
     });
   });
 }
-//
-// function modifyTime() {
-//   var add = true;
-//   var tabsProcessed = 0;
-//   chrome.tabs.query({active: true}, function(tabs) {
-//     if (typeof tabs != undefined) {
-//       tabs.forEach(function(tab) {
-//         tabsProcessed++;
-//         if (checkUrl(tab.url)) {
-//           add = false;
-//         }
-//         if (tabsProcessed === tabs.length) {
-//           add ? addTime() : subtractTime();
-//         }
-//       });
-//     }
-//   });
-// }
 
 function addTime() {
   //check for zero to account for unlimited funTimeMax value
