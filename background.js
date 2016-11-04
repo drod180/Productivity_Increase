@@ -58,12 +58,11 @@ function initalizeTime() {
     if (typeof obj.time != "undefined") {
       var currentTime = Date.now();
       var timePassed = (currentTime - obj.time.saveTime) / 60000;
-      //refund time if they were off internet for more than 5 minutes
-      if (timePassed > 5) {
-        funTime += timePassed;
-        if (funTimeMax != 0 && funTime > 15) { funTime = 15; }
-      }
       funTime = parseFloat(obj.time.funTime);
+      //Reset to 15 minutes if they were away for more than 15 minutes
+      if (timePassed > 15 && funTime < 15) {
+        funTime = 15;
+      }
     }
   });
 }
